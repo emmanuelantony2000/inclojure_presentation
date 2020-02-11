@@ -37,6 +37,15 @@
                 <p>I am a Rust developer from Kochi. I am a student currently pursuing BTech in Computer Science.</p>
             </section>
             <section>
+                <h2>Topics</h2>
+                <ul>
+                    <li>What is Wasm?</li>
+                    <li>Where can you run Wasm?</li>
+                    <li>How to run Wasm on top of JVM?</li>
+                    <li>Calling Wasm code from Clojure. (Live demo)</li>
+                </ul>
+            </section>
+            <section>
                 <section>
                     <h1>What is Wasm?</h1>
                 </section>
@@ -64,7 +73,7 @@
                 </section>
                 <section>
                     <p>
-                        Because Wasm is so portable being a very small file after compiling carrying near native performance, 
+                        Because Wasm is so portable being a very small file after compiling, carrying near native performance, 
                         it can be used as a portable binary. C was the portable assembly, and Wasm is the portable binary.
                     </p>
                 </section>
@@ -75,8 +84,7 @@
                 </section>
                 <section>
                     <p>Wasm can be run using a JIT or an AOT compiler.</p>
-                </section>
-                <section>
+                    <br>
                     <p>
                         Wasm is about 20% slower than native performance making it ideal for being used in resource intensive applications on the web.
                         Also it is cross platform making it easy for developers to develop on it.
@@ -113,6 +121,12 @@
                 <section>
                     When using cljs, wasm code can be called through a js function.
                 </section>
+                <section data-background-iframe="https://alphacoder.me/wasm_cljs/index.html" data-background-interactive>
+                    <div style="position: absolute; width: 25vh; height: 40vh; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 10px; font-size: 20px; text-align: center;">
+                        <img src="images/qr.png" style="border: none;" alt="Qr-code">
+                        <p>Keep on clicking to see the lag.</p>
+					</div>
+                </section>
             </section>
             <section>
                 <section>
@@ -122,6 +136,10 @@
                     <p>
                         Yes, this definitely is a way by which Clojure Applications, specially CojureScript can be supercharged.
                     </p>
+                </section>
+                <section>
+                    <p>You can write the heavy duty WebGl and other compute intensive code in Rust and can call it from cljs.</p>
+                    <p>If you are using Clojure, then IO and similar stuff can be written in Rust.</p>
                 </section>
             </section>
             <section>
@@ -139,7 +157,6 @@
         progress: true,
         center: true,
         hash: true,
-        transition: 'slide',
         dependencies: [
             { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector('[data-markdown]'); } },
             { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector('[data-markdown]'); } },
