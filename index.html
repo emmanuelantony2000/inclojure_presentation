@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Wasm on Clojure</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/code_styles/atelier-dune-dark.css">
+    <!-- Printing and PDF exports -->
+    <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>Wasm on Clojure</h1>
+            </section>
+            <section>
+                <p>Twitter: @EmmanuelAntony5</p>
+                <p>Github: emmanuelantony2000</p>
+                <br>
+                <p>I am a Rust developer from Kochi. I am a student currently pursuing BTech in Computer Science.</p>
+            </section>
+            <section>
+                <section>
+                    <h1>What is Wasm?</h1>
+                </section>
+                <section>
+                    <p>Wasm (or WebAssembly) is a standard for a portable binary code format for a stack based virtual machine.</p>
+                </section>
+                <section>
+                    <h2>WebAssembly comes in two flavours</h2>
+                    <ul>
+                        <li>The .wat (WebAssembly Text) text format that uses S-expressions</li>
+                        <li>The .wasm binary format is low level and intended to be consumed by Wasm virtual machines.</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>What does .wat look like?</h2>
+                    <pre><code data-trim data-line-numbers data-noescape>
+(module
+    (func $add (param $lhs i32) (param $rhs i32) (result i32)
+        get_local $lhs
+        get_local $rhs
+        i32.add)
+    (export "add" (func $add))
+)
+                    </code></pre>
+                </section>
+                <section>
+                    <p>
+                        Because Wasm is so portable being a very small file after compiling carrying near native performance, 
+                        it can be used as a portable binary. C was the portable assembly, and Wasm is the portable binary.
+                    </p>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h1>Where can you run Wasm?</h1>
+                </section>
+                <section>
+                    <p>Wasm can be run using a JIT or an AOT compiler.</p>
+                </section>
+                <section>
+                    <p>
+                        Wasm is about 20% slower than native performance making it ideal for being used in resource intensive applications on the web.
+                        Also it is cross platform making it easy for developers to develop on it.
+                        Wasm is also gaining some traction on embedded devices as it does not have a garbage collector (for now).
+                    </p>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h1>How to run Wasm on top of JVM?</h1>
+                </section>
+                <section>
+                    <p>
+                        There are tools like asmble to run .wat files on top of JVM.
+                        You can also directly convert Clojure code to .wat files
+                    </p>
+                </section>
+                <section>
+                    <p>
+                        The thing about Wasm is in its interoperability. Once compiled to .wasm the binary file can be run anywhere.
+                        Even called from other languages.
+                    </p>
+                </section>
+                <section>
+                    <p>
+                        A nice way to run Wasm is by using Wasmer, which is a standalone runtime for Wasm.
+                    </p>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h1>Calling Wasm code from Clojure.</h1>
+                </section>
+                <section>
+                    When using cljs, wasm code can be called through a js function.
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h1>Can this be a bridge between Clojure and Rust?</h1>
+                </section>
+                <section>
+                    <p>
+                        Yes, this definitely is a way by which Clojure Applications, specially CojureScript can be supercharged.
+                    </p>
+                </section>
+            </section>
+            <section>
+                <h1>Thank You!</h1>
+            </section>
+        </div>
+    </div>
+    <script src="js/reveal.js"></script>
+    <script>
+    // More info about config & dependencies:
+    // - https://github.com/hakimel/reveal.js#configuration
+    // - https://github.com/hakimel/reveal.js#dependencies
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        center: true,
+        hash: true,
+        transition: 'slide',
+        dependencies: [
+            { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector('[data-markdown]'); } },
+            { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector('[data-markdown]'); } },
+            { src: 'plugin/notes/notes.js', async: true },
+            {
+                src: 'plugin/highlight/highlight.js',
+                callback: function() {
+                    hljs.configure({ useBR: false });
+                    hljs.initHighlightingOnLoad();
+                },
+                async: true
+            },
+            { src: 'plugin/notes/notes.js', async: true },
+        ]
+    });
+    </script>
+</body>
+
+</html>
