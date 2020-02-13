@@ -48,9 +48,7 @@
             <section>
                 <section>
                     <h1>What is Wasm?</h1>
-                </section>
-                <section>
-                    <p>Wasm (or WebAssembly) is a standard for a portable binary code format for a stack based virtual machine.</p>
+                    <p class="fragment fade-up">Wasm (or WebAssembly) is a standard for a portable binary code format for a stack based virtual machine.</p>
                 </section>
                 <section>
                     <h2>WebAssembly comes in two flavours</h2>
@@ -60,15 +58,35 @@
                     </ul>
                 </section>
                 <section>
+                    <h2>Let's see a Rust function</h2>
+                    <pre><code class="rust" data-trim data-line-numbers data-noescape>
+#[no_mangle]
+pub extern &quot;C&quot; fn add(x: i32, y: i32) -> i32 {
+    x + y
+}
+                    </code></pre>
+                </section>
+                <section>
                     <h2>What does .wat look like?</h2>
                     <pre><code data-trim data-line-numbers data-noescape>
 (module
-    (func $add (param $lhs i32) (param $rhs i32) (result i32)
-        get_local $lhs
-        get_local $rhs
-        i32.add)
-    (export "add" (func $add))
-)
+(type $t0 (func (param i32 i32) (result i32)))
+(func $add (export "add") (type $t0)
+    (param $p0 i32) (param $p1 i32) (result i32)
+    get_local $p1
+    get_local $p0
+    i32.add)
+(memory $memory (export "memory") 17))
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>This is how .wasm looks like</h2>
+                    <pre><code class="wasm" data-trim data-line-numbers data-noescape>
+0x00000000 0061736D0100000001070160027F7F01 .asm.......`....
+0x00000010 7F030201000503010011071002066D65 ..............me
+0x00000020 6D6F727902000361646400000A090107 mory...add......
+0x00000030 00200120006A0B000B076C696E6B696E . . .j....linkin
+0x00000040 67030100                         g...
                     </code></pre>
                 </section>
                 <section>
@@ -88,7 +106,7 @@
                     <p>
                         Wasm is about 20% slower than native performance making it ideal for being used in resource intensive applications on the web.
                         Also it is cross platform making it easy for developers to develop on it.
-                        Wasm is also gaining some traction on embedded devices as it does not have a garbage collector (for now).
+                        Wasm is also gaining some traction on embedded devices as it does not have a garbage collector. (for now)
                     </p>
                 </section>
             </section>
@@ -119,7 +137,40 @@
                     <h1>Calling Wasm code from Clojure.</h1>
                 </section>
                 <section>
-                    When using cljs, wasm code can be called through a js function.
+                    When using cljs, wasm code can be called using a js function.
+                    <pre class="fragment fade-up"><code class="js" data-line-numbers="1,7" data-trim data-noescape>
+fetch&lpar;&apos;../out/main.wasm&apos;&rpar;.then&lpar;response =>
+    response.arrayBuffer&lpar;&rpar;
+    &rpar;.then&lpar;bytes => WebAssembly.instantiate&lpar;bytes&rpar;&rpar;.then&lpar;
+        results => {
+        instance = results.instance;
+        document.getElementById&lpar;&quot;container&quot;&rpar;.textContent = 
+        instance.exports.fib&lpar;12&rpar;;
+    }&rpar;.catch&lpar;console.error&rpar;;
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>For the Demo</h2>
+                    <p>Wrote a Rust function for calculating the nth Fibonacci number</p>
+                    <pre><code class="rust" data-line-numbers data-noescape data-trim>
+#[no_mangle]
+pub extern "C" fn fib(x: i32) -> i32 {
+    if x == 0 || x == 1 {
+        1
+    } else {
+        fib(x - 1) + fib(x - 2)
+    }
+}
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>Wrote the same function in cljs</h3>
+                    <pre><code class="clojure" data-line-numbers data-noescape data-trim>
+(defn fib [n]
+  (if (> n 1)
+    (+ (fib (dec n)) (fib (- n 2)))
+    1))
+                    </code></pre>
                 </section>
                 <section data-background-iframe="https://alphacoder.me/wasm_cljs/index.html" data-background-interactive>
                     <div style="position: absolute; width: 25vh; height: 40vh; right: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.5), 0 5px 25px rgba(0,0,0,0.2); background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 10px; font-size: 20px; text-align: center;">
