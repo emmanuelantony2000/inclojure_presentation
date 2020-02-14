@@ -48,17 +48,29 @@
             <section>
                 <section>
                     <h1>What is Wasm?</h1>
-                    <p class="fragment fade-up">Wasm (or WebAssembly) is a standard for a portable binary code format for a stack based virtual machine.</p>
                 </section>
                 <section>
-                    <h2>WebAssembly comes in two flavours</h2>
+                    <h2>Wasm is WebAssembly</h2>
                     <ul>
-                        <li>The .wat (WebAssembly Text) text format that uses S-expressions</li>
-                        <li>The .wasm binary format is low level and intended to be consumed by Wasm virtual machines.</li>
+                        <li>A <i style="font-style: italic;">standard</i> for portable binary code</li>
+                        <li>Near-native performance (20% slower)</li>
+                        <li>Small footprint</li>
+                        <li>Cross-platform</li>
+                        <li>
+                            2 "flavours"
+                            <ul>
+                                <li>.wat WebAssembly Text, written as S-expressions</li>
+                                <li>.wasm binary format</li>
+                            </ul>
+                        </li>
                     </ul>
                 </section>
                 <section>
-                    <h2>Let's see a Rust function</h2>
+                    <h2>What does Wasm look like?</h2>
+                    <h4>Let's compile Rust -> .wat -> .wasm</h4>
+                </section>
+                <section>
+                    <h2>A Rust function</h2>
                     <pre><code class="rust" data-trim data-line-numbers data-noescape>
 #[no_mangle]
 pub extern &quot;C&quot; fn add(x: i32, y: i32) -> i32 {
@@ -90,10 +102,9 @@ pub extern &quot;C&quot; fn add(x: i32, y: i32) -> i32 {
                     </code></pre>
                 </section>
                 <section>
-                    <p>
-                        Because Wasm is so portable being a very small file after compiling, carrying near native performance, 
-                        it can be used as a portable binary. C was the portable assembly, and Wasm is the portable binary.
-                    </p>
+                    <h2>
+                        If C is the portable assembly then Wasm is the portable binary
+                    </h2>
                 </section>
             </section>
             <section>
@@ -101,13 +112,11 @@ pub extern &quot;C&quot; fn add(x: i32, y: i32) -> i32 {
                     <h1>Where can you run Wasm?</h1>
                 </section>
                 <section>
-                    <p>Wasm can be run using a JIT or an AOT compiler.</p>
-                    <br>
-                    <p>
-                        Wasm is about 20% slower than native performance making it ideal for being used in resource intensive applications on the web.
-                        Also it is cross platform making it easy for developers to develop on it.
-                        Wasm is also gaining some traction on embedded devices as it does not have a garbage collector. (for now)
-                    </p>
+                        <p>Wasm can be run using a JIT or an AOT compiler.</p>
+                        <br>
+                        <p>
+                            Wasm is also gaining some traction on embedded devices as it does not have a garbage collector. (for now)
+                        </p>
                 </section>
             </section>
             <section>
