@@ -29,12 +29,19 @@
         <div class="slides">
             <section>
                 <h1>Wasm on Clojure</h1>
+                <br>
+                <p style="text-align: right; padding: 0; margin: 0;">Emmanuel Antony</p>
+                <p style="text-align: right; padding: 0; margin: 0;">(@EmmanuelAntony5)</p>
             </section>
             <section>
                 <p>Twitter: @EmmanuelAntony5</p>
-                <p>Github: emmanuelantony2000</p>
+                <p>Github: @emmanuelantony2000</p>
                 <br>
-                <p>I am a Rust developer from Kochi. I am a student currently pursuing BTech in Computer Science.</p>
+                <ul>
+                    <li>BTech in CS</li>
+                    <li>Rust Developer</li>
+                    <li>Google ML Facilitator</li>
+                </ul>
             </section>
             <section>
                 <h2>Topics</h2>
@@ -42,7 +49,7 @@
                     <li>What is Wasm?</li>
                     <li>Where can you run Wasm?</li>
                     <li>How to run Wasm on top of JVM?</li>
-                    <li>Calling Wasm code from Clojure. (Live demo)</li>
+                    <li>Calling Wasm code from Clojure/ClojureScript</li>
                 </ul>
             </section>
             <section>
@@ -54,8 +61,7 @@
                     <ul>
                         <li>A <i style="font-style: italic;">standard</i> for portable binary code</li>
                         <li>Near-native performance (20% slower)</li>
-                        <li>Small footprint</li>
-                        <li>Cross-platform</li>
+                        <li>Small footprint and cross-platform</li>
                         <li>
                             2 "flavours"
                             <ul>
@@ -63,6 +69,7 @@
                                 <li>.wasm binary format</li>
                             </ul>
                         </li>
+                        <li>AST in binary format</li>
                     </ul>
                 </section>
                 <section>
@@ -102,9 +109,61 @@ pub extern &quot;C&quot; fn add(x: i32, y: i32) -> i32 {
                     </code></pre>
                 </section>
                 <section>
-                    <h2>
-                        If C is the portable assembly then Wasm is the portable binary
-                    </h2>
+                    <h2>You can even convert Clojure code to Wasm</h2>
+                    <p>Using <i style="font-style: italic;">clj-wasm</i></p>
+                    <pre><code class="clojure" data-trim data-line-numbers data-noescape>
+(module
+(defn add [^i32 a ^i32 b]
+    (let [x 1]
+    (if (= a x)
+        (+ a x)
+        (+ a b))))
+
+(defn main []
+    (add 9 8)))
+                    </code></pre>
+                </section>
+                <section>
+                    <pre><code style="font-size: small; line-height: normal;" data-trim data-line-numbers data-noescape>
+(module
+(type $return_add (func (param $a i32) (param $b i32) (result i32)))
+
+(func $add (param $a i32) (param $b i32) (result i32) (local $x i32)
+    (block (result i32)
+    (local.set $x (i32.const 1))
+    (if (result i32)
+        (i32.eq
+        (local.get $x)
+        (local.get $a))
+        (then
+        (i32.add
+            (local.get $x)
+            (local.get $a)))
+        (else
+        (i32.add
+            (local.get $b)
+            (local.get $a))))))
+
+(export "add" (func $add))
+
+(type $return_main (func (result i32)))
+
+(func $main (result i32)
+    (call $add
+    (i32.const 9)
+    (i32.const 8)))
+
+(export "main" (func $main)))
+                    </code></pre>
+                </section>
+                <section>
+                    <ul>
+                        <li>If C is the portable assembly then Wasm is the portable binary</li>
+                        <li>Taking the concept of dll to the next level</li>
+                        <li>Calling from multiple languages is an ease</li>
+                        <li>Wasmer - standalone runtime comes as a library</li>
+                        <li>GraalWasm</li>
+                    </ul>
                 </section>
             </section>
             <section>
@@ -112,11 +171,12 @@ pub extern &quot;C&quot; fn add(x: i32, y: i32) -> i32 {
                     <h1>Where can you run Wasm?</h1>
                 </section>
                 <section>
-                        <p>Wasm can be run using a JIT or an AOT compiler.</p>
-                        <br>
-                        <p>
-                            Wasm is also gaining some traction on embedded devices as it does not have a garbage collector. (for now)
-                        </p>
+                    <ul>
+                        <li>JIT or an AOT compiler</li>
+                        <li>Mainly used on the web</li>
+                        <li>Embedded devices</li>
+                        <li>Native</li>
+                    </ul>
                 </section>
             </section>
             <section>
@@ -124,30 +184,33 @@ pub extern &quot;C&quot; fn add(x: i32, y: i32) -> i32 {
                     <h1>How to run Wasm on top of JVM?</h1>
                 </section>
                 <section>
-                    <p>
-                        There are tools like asmble to run .wat files on top of JVM.
-                        You can also directly convert Clojure code to .wat files
-                    </p>
+                    <h2>Tools like asmble make this an ease</h2>
                 </section>
                 <section>
-                    <p>
-                        The thing about Wasm is in its interoperability. Once compiled to .wasm the binary file can be run anywhere.
-                        Even called from other languages.
-                    </p>
-                </section>
-                <section>
-                    <p>
-                        A nice way to run Wasm is by using Wasmer, which is a standalone runtime for Wasm.
-                    </p>
+                    <h2>Let's run .wat on the JVM</h2>
+                    <h4>The .wat file</h4>
+                    <pre><code data-trim data-line-numbers data-noescape>
+(module
+  (func (export "doAdd") (param $i i32) (result i32)
+    (i32.add (get_local 0) (i32.const 20))
+  )
+)
+                    </code></pre>
+                    <pre><code data-trim data-noescape>
+asmble invoke -res -in test.wast doAdd 100
+                    </code></pre>
+                    <pre><code data-trim data-noescape>
+120
+                    </code></pre>
                 </section>
             </section>
             <section>
                 <section>
-                    <h1>Calling Wasm code from Clojure.</h1>
+                    <h1>Calling Wasm code from Clojure</h1>
                 </section>
                 <section>
                     When using cljs, wasm code can be called using a js function.
-                    <pre class="fragment fade-up"><code class="js" data-line-numbers="1,7" data-trim data-noescape>
+                    <pre><code class="js" data-line-numbers="1,7" data-trim data-noescape>
 fetch&lpar;&apos;../out/main.wasm&apos;&rpar;.then&lpar;response =>
     response.arrayBuffer&lpar;&rpar;
     &rpar;.then&lpar;bytes => WebAssembly.instantiate&lpar;bytes&rpar;&rpar;.then&lpar;
@@ -194,6 +257,7 @@ pub extern "C" fn fib(x: i32) -> i32 {
                         <li>Your application might not be webcentric.</li>
                         <li>Function calling performance bottleneck</li>
                         <li>Library support unavailable</li>
+                        <li>Threading inside function</li>
                     </ul>
                 </section>
             </section>
@@ -202,26 +266,22 @@ pub extern "C" fn fib(x: i32) -> i32 {
                     <h1>Can this be a bridge between Clojure and Rust?</h1>
                 </section>
                 <section>
-                    <p>
-                        Yes, this definitely is a way by which Clojure Applications, specially CojureScript can be supercharged.
-                    </p>
-                </section>
-                <section>
-                    <p>You can write the heavy duty WebGl and other compute intensive code in Rust and can call it from cljs.</p>
-                    <p>If you are using Clojure, then IO and similar stuff can be written in Rust.</p>
+                    <ul>
+                        <li>Supercharging CojureScript functions</li>
+                        <li>WebGL</li>
+                        <li>Existing Rust libraries in Clojure</li>
+                    </ul>
                 </section>
             </section>
             <section>
                 <h1>Links</h1>
-                <div class="fragment fade-up">
-                    <ul>
-                        <li><a href="https://webassembly.org" target="_blank">webassembly.org</a></li>
-                        <li><a href="https://github.com/cretz/asmble" target="_blank">Asmble (github.com/cretz/asmble)</a></li>
-                        <li><a href="https://github.com/pkpkpk/fress" target="_blank">fress (github.com/pkpkpk/fress)</a></li>
-                        <li><a href="https://webassembly.studio" target="_blank">webassembly.studio</a></li>
-                        <li><a href="https://wasmer.io" target="_blank">wasmer.io</a></li
-                    </ul>
-                </div>
+                <ul>
+                    <li><a href="https://webassembly.org" target="_blank">webassembly.org</a></li>
+                    <li><a href="https://github.com/cretz/asmble" target="_blank">Asmble (github.com/cretz/asmble)</a></li>
+                    <li><a href="https://github.com/pkpkpk/fress" target="_blank">fress (github.com/pkpkpk/fress)</a></li>
+                    <li><a href="https://webassembly.studio" target="_blank">webassembly.studio</a></li>
+                    <li><a href="https://wasmer.io" target="_blank">wasmer.io</a></li>
+                </ul>
             </section>
             <section>
                 <h1>Thank You!</h1>
